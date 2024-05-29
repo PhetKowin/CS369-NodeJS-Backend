@@ -1,12 +1,31 @@
 const express = require('express')    //ใช้ module express
 const router = express.Router();  //ใช้ function router ของ express
 const Db = require('../controller/shippers') //import shipper ในตัวแปร Db
+const jwt = require('jsonwebtoken');
 
 // middleware
 router.use((req, res, next) => {
     console.log('middleware');
     next();
 });
+
+const verifyToken = (req,res,next) => {
+    const token = req.body.token || req.query.token || req.header['x-acess-token'];
+
+    if(!token) {
+        return res.status(403).send( { message: 'A token  is required for authentication' })
+    }
+
+    try{
+        const decoded = jwt.verify(token,'cat');
+        req.user = decoded;
+    } catch(err){
+        return res.status(401).send( { message: 'Invalid Token' })
+    }
+
+    return next();
+}
+
 //http://localhost:8080/api/ship
 router.route('/ship').get((req, res) => {
     Db.getShip().then((data) => {    // เรียกใช้ function getShip() และ return data กลับมา 
@@ -31,7 +50,7 @@ router.route('/ship/:id').get((req, res) => {    // ส่ง parameter id
     });
 })
 //http://localhost:8080/api/ship
-router.route('/ship').post((req, res) => {
+router.route('/ship').post(verifyToken, (req, res) => {
     let ship = { ...req.body } //ส่ง req.body เป็นข้อมูล json เข้าไปยังตัวแปร ship
     Db.postShip(ship).then((data) => {    // เรียกใช้ function postShip() สง ship และ return data กลับมา 
         if (data.code == 'success') //return data.codde กลับมาเป็น success
