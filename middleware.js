@@ -6,9 +6,9 @@ const app = express();
 const shiproute = require('./route/shippers_route')
 const authroute = require('./route/auth_route')
 const reportRouter = require('./route/report')
-const passport = require('passport');
-const session = require('express-session');
-const LocalStrategy = require('passport-local').Strategy
+// const passport = require('passport');
+// const session = require('express-session');
+// const LocalStrategy = require('passport-local').Strategy
 
 app.use(bodyParser.urlencoded({ extended: true })); // ใช้งาน bodyParser แบบ application/x-www-form-urlencoded  
 /*ใช้ middleware ที่ชื่อว่า body-parser เพื่อทำการแปลงข้อมูลที่ส่งมากับคำขอ (request) จากรูปแบบของ URL-encoded data 
@@ -23,50 +23,50 @@ app.use(myrouter);
 app.use('/api', shiproute); // ระบุ route ชื่อ api เพื่่อป้องกันความสับสน ตอนเรียกหน้า page ซึ่งได้สร้าง link shipper_route.js ไว้แล้วที่
 app.use('/auth', authroute);
 app.use('/report', reportRouter);
-app.use(session({
-    secret: 'cat',
-    resave: false,
-    saveUninitialized: false,
-}));
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(session({
+//     secret: 'cat',
+//     resave: false,
+//     saveUninitialized: false,
+// }));
+// app.use(passport.initialize());
+// app.use(passport.session());
 
-passport.use(new LocalStrategy((username, password, done) => {
-    if (username == "admin" && password == "admin") {
-        user = {
-            _id: 1,
-            fname: "Anakin ",
-            lname: "Skywalker"
-        }
-        console.log('Correct Password.')
-        return done(null, user)
-    } else {
-        console.log('Incorrect password.')
-        return done(null, false, { message: 'Incorrect password.' })
-    }
-}))
+// passport.use(new LocalStrategy((username, password, done) => {
+//     if (username == "admin" && password == "admin") {
+//         user = {
+//             _id: 1,
+//             fname: "Anakin ",
+//             lname: "Skywalker"
+//         }
+//         console.log('Correct Password.')
+//         return done(null, user)
+//     } else {
+//         console.log('Incorrect password.')
+//         return done(null, false, { message: 'Incorrect password.' })
+//     }
+// }))
 
-passport.serializeUser(function (user, done) {
-    done(null, user);
-});
+// passport.serializeUser(function (user, done) {
+//     done(null, user);
+// });
 
-passport.deserializeUser(function (user, done) {
-    done(null, user);
-});
+// passport.deserializeUser(function (user, done) {
+//     done(null, user);
+// });
 
-app.post('/login', passport.authenticate('local', {
-    successRedirect: '/user',
-    failureRedirect: '/login',
-}));
+// app.post('/login', passport.authenticate('local', {
+//     successRedirect: '/user',
+//     failureRedirect: '/login',
+// }));
 
-app.get("/user", (req, res) => {
-    console.log(req.user);
-    res.send({ message: req.user });
-})
+// app.get("/user", (req, res) => {
+//     console.log(req.user);
+//     res.send({ message: req.user });
+// })
 
-app.get("/login", (req, res) => {
-    res.send({ message: "Error" });
-})
+// app.get("/login", (req, res) => {
+//     res.send({ message: "Error" });
+// })
 
 
 app.listen(8080, () => {
