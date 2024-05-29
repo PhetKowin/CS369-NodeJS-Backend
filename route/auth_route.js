@@ -11,7 +11,7 @@ router.route('/login').post((req, res) => {
     Db.postUser(user).then((data) => {    // เรียกใช้ functio
         if (data.output.code == 'success') //return data.codde กลับมาเป็น success
         {
-            const token = jwt.sign({ id: data.recordset[0].UserID, name: data.recordset[0].Username }, 'cat', { expiresIn: '24h' });
+            const token = jwt.sign({ id: data.recordset[0].UserID, name: data.recordset[0].Username }, 'cat', { expiresIn: '2m' });
             data.recordset[0].token = token;
             res.status(200).json({ data: data.recordset[0], message: 'success' });
         }
